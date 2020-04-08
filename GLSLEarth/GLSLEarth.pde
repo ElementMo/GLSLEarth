@@ -3,6 +3,7 @@ import peasy.*;
 PeasyCam cam;
 PShader shader;
 PImage diffuse, specular, normal, cloud, lights;
+int textureSize = 6000;
 
 int loadState = 0;
 int preloadState = 0;
@@ -13,14 +14,16 @@ PGraphics starBG;
 
 void setup() {
   size(1280, 720, P3D);
-  smooth(10);
+  background(0);
+  smooth(8);
+  sphereDetail(80);
   cam = new PeasyCam(this, 1200);
   cam.setMinimumDistance(2);
 
   shader = loadShader("frag.glsl", "vert.glsl");
 
-  sphereDetail(80);
   thread("loadTexture");
+
   starBG = createGraphics(width, height, P3D);
   starBG.beginDraw();
   starBG.background(0);
@@ -38,7 +41,6 @@ void draw() {
   background(0);
 
   if (100 - percentDsiplay <= EPSILON) {
-
     resetShader();
     cam.beginHUD();
     image(starBG, 0, 0);
@@ -68,41 +70,52 @@ void draw() {
     fill(255);
     textSize(20);
     if (preloadState != loadState) {
-      percent = loadState/9.0*100;
+      percent = loadState/5.0*100;
       preloadState = loadState;
     }
-    percentDsiplay = lerp(percentDsiplay, percent, 0.05);
+    percentDsiplay = lerp(percentDsiplay, percent, 0.1);
 
     String s = String.format("Loading Texture...  %.1f%%", percentDsiplay);
     text(s, width/2-s.length()*5, height/2);
     stroke(255);
     line(0, height/2+20, (percentDsiplay/100)*width, height/2+20);
     if (99.9 - percentDsiplay < EPSILON) {
-      s = String.format("Initializing...", percentDsiplay);
+      s = "Initializing...";
       text(s, width/2-s.length()*5, height/2 + 50);
     }
     cam.endHUD();
   }
 }
-void loadTexture() {
-  int textureSize = 6144;
 
+void loadTexture() {
+  thread("loadDiffuse");
+  thread("loadSpecular");
+  thread("loadNormal");
+  thread("loadCloud");
+  thread("loadLights");
+}
+void loadDiffuse() {
   diffuse = loadImage("6k_earth_daymap.jpg");
-  loadState = 1;
-  specular = loadImage("6k_earth_specular_map.jpg");
-  loadState = 2;
-  normal = loadImage("6k_earth_normal_map.jpg");
-  loadState = 3;
-  cloud = loadImage("6k_earth_clouds.jpg");
-  loadState = 4;
-  lights = loadImage("6k_earth_nightmap.jpg");
-  loadState = 5;
   diffuse.resize(textureSize, textureSize);
-  loadState = 6;
+  loadState ++;
+}
+void loadSpecular() {
+  specular = loadImage("6k_earth_specular_map.jpg");
   specular.resize(textureSize, textureSize);
-  loadState = 7;
+  loadState ++;
+}
+void loadNormal() {
+  normal = loadImage("6k_earth_normal_map.jpg");
+  normal.resize(textureSize, textureSize);
+  loadState ++;
+}
+void loadCloud() {
+  cloud = loadImage("6k_earth_clouds.jpg");
   cloud.resize(textureSize, textureSize);
-  loadState = 8;
+  loadState ++;
+}
+void loadLights() {
+  lights = loadImage("6k_earth_nightmap.jpg");
   lights.resize(textureSize, textureSize);
-  loadState = 9;
+  loadState ++;
 }
