@@ -64,6 +64,7 @@ void draw() {
       10000*cos(lightRotation), -5000, 10000*sin(lightRotation));
 
     noStroke();
+    rotateY(radians(frameCount*0.1));
     sphere(500);
   } else {
     cam.beginHUD();
