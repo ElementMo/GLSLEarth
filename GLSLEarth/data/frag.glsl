@@ -38,6 +38,7 @@ void main(){
     vec3 texture_normal = texture2D(u_texture_normal, pixel_texCoord.xy).xyz;
     texture_normal = normalize(texture_normal*2.0 - 1.0);
     texture_normal.x = -texture_normal.x;
+    texture_normal.y = -texture_normal.y;
     mat3 TBN = cotangent_frame(N, pixelPosition, pixel_texCoord.xy);
     N = TBN * texture_normal;
 

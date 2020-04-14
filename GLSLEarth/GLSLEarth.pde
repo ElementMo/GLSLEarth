@@ -13,10 +13,10 @@ float lightRotation = 0;
 PGraphics starBG;
 
 void setup() {
-  size(1280, 720, P3D);
+  //fullScreen(P3D, 2);
+  size(1600, 900, P3D);
   background(0);
-  smooth(8);
-  sphereDetail(80);
+  sphereDetail(100);
   cam = new PeasyCam(this, 1200);
   cam.setMinimumDistance(2);
 
@@ -60,7 +60,7 @@ void draw() {
     shader.set("u_texture_cloud", cloud);
     shader.set("u_texture_lights", lights);
 
-    pointLight(255, 255, 255, 
+    pointLight(255, 255, 255,
       10000*cos(lightRotation), -5000, 10000*sin(lightRotation));
 
     noStroke();

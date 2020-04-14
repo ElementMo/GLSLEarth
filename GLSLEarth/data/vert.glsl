@@ -14,7 +14,6 @@ varying vec3 light_dir;
 varying vec3 pixel_cam_dir;
 varying vec4 pixel_texCoord;
 
-
 void main(){
     gl_Position = transform * position;
     pixelNormal = normalize(modelview * vec4(normal, 1.0)).xyz;
