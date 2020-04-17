@@ -9,15 +9,12 @@ uniform sampler2D u_texture_normal;
 uniform sampler2D u_texture_cloud;
 uniform sampler2D u_texture_lights;
 
-
 varying vec3 pixelNormal;
 varying vec3 pixelPosition;
 varying vec3 light_dir;
 varying vec3 pixel_cam_dir;
 varying vec4 pixel_texCoord;
 
-// Normal Mapping Without Precomputed Tangents
-// http://www.thetenthplanet.de/archives/1180
 mat3 cotangent_frame( vec3 N, vec3 p, vec2 uv ) {
     vec3 dp1 = dFdx( p );
     vec3 dp2 = dFdy( p );
@@ -41,14 +38,11 @@ void main(){
     texture_normal.y = -texture_normal.y;
     mat3 TBN = cotangent_frame(N, pixelPosition, pixel_texCoord.xy);
     N = TBN * texture_normal;
-
     vec3 R = normalize( (N*dot(N, 2*light_dir)) - light_dir );
-
     float intensity = max(0.0, dot(light_dir, N));
     float intensity_smooth = max(0.0, dot(light_dir, normalize(pixelNormal)));
     float specular = pow(max( dot(pixel_cam_dir, R), 0.0), u_smoothness);
     float dot_value = dot(N, pixel_cam_dir);
-
 
     vec3 texture_color = texture2D (u_texture, pixel_texCoord.xy).xyz;
     vec3 texture_specular = texture2D(u_texture_specular, pixel_texCoord.xy).xyz;

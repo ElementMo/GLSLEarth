@@ -10,6 +10,8 @@ int preloadState = 0;
 float percent = 0;
 float percentDsiplay = 0;
 float lightRotation = 0;
+float earthRotation = 0;
+boolean earthRotateToggle = true;
 PGraphics starBG;
 
 void setup() {
@@ -36,15 +38,15 @@ void setup() {
 }
 
 void draw() {
+  background(0);
   if (keyPressed && key == 'r')
     lightRotation += radians(0.5);
-  background(0);
-
   if (100 - percentDsiplay <= EPSILON) {
     resetShader();
     cam.beginHUD();
     image(starBG, 0, 0);
     text("Press 'r' to rotate light", 20, 30);
+    text("Press 'a' to toggle auto rotate", 20, 60);
     cam.endHUD();
 
     shader(shader);
@@ -60,11 +62,13 @@ void draw() {
     shader.set("u_texture_cloud", cloud);
     shader.set("u_texture_lights", lights);
 
-    pointLight(255, 255, 255,
+    pointLight(255, 255, 255, 
       10000*cos(lightRotation), -5000, 10000*sin(lightRotation));
 
     noStroke();
-    rotateY(radians(frameCount*0.1));
+    if (earthRotateToggle)
+      earthRotation += 0.1;
+    rotateY(radians(earthRotation));
     sphere(500);
   } else {
     cam.beginHUD();
@@ -86,6 +90,11 @@ void draw() {
     }
     cam.endHUD();
   }
+}
+
+void keyPressed() {
+  if (key == 'a')
+    earthRotateToggle = !earthRotateToggle;
 }
 
 void loadTexture() {
